@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사과문 작성 도우미 - SafeSettlement</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&family=Nanum+Myeongjo:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .guide-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .guide-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .editor-area {
+            background: #fff;
+            border-radius: var(--radius-md);
+            padding: 30px;
+            min-height: 600px;
+            color: #333;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        textarea.paper-input {
+            width: 100%;
+            height: 500px;
+            border: none;
+            resize: none;
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            outline: none;
+            background: transparent;
+            background-image: linear-gradient(#eee 1px, transparent 1px);
+            background-size: 100% 2.5rem;
+            /* Line height match */
+            padding-top: 5px;
+        }
+
+        .checklist-card {
+            background: var(--bg-card);
+            border: var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 20px;
+        }
+
+        .check-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            align-items: flex-start;
+        }
+
+        .check-item i {
+            margin-top: 4px;
+            color: var(--secondary);
+        }
+
+        .tone-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="index.html" class="logo">SafeSettlement.</a>
+            <nav class="nav-links">
+                <div class="nav-item">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>사건 현황</span>
+                </div>
+                <div class="nav-item active">
+                    <i class="fas fa-pen-nib"></i>
+                    <span>사과문 작성</span>
+                </div>
+                <div class="nav-item" onclick="location.href='dashboard.html'">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>돌아가기</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <div>
+                    <h2 style="margin-bottom: 5px;">진심을 전하는 사과문 작성</h2>
+                    <p style="color: var(--text-muted);">AI가 감정을 분석하고, 2차 가해가 되지 않도록 돕습니다.</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary" onclick="analyzeTone()">
+                        <i class="fas fa-magic" style="margin-right: 8px;"></i> AI 감정 분석
+                    </button>
+                </div>
+            </div>
+
+            <div class="guide-grid">
+                <!-- Editor -->
+                <div class="editor-area">
+                    <div style="margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px;">
+                        <input type="text" placeholder="제목 (예: 피해자분께 진심으로 사과드립니다)"
+                            style="width: 100%; border:none; font-size: 1.2rem; font-weight: bold; font-family: 'Nanum Myeongjo'; outline: none;">
+                    </div>
+                    <textarea class="paper-input" placeholder="여기에 내용을 작성하세요.
+                    
+[작성 팁]
+1. 사건의 경위를 변명 없이 인정하세요.
+2. 피해자가 겪었을 고통에 대해 구체적으로 공감하세요.
+3. 재발 방지를 위한 구체적인 약속을 적어주세요."></textarea>
+                </div>
+
+                <!-- Guidance Sidebar -->
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+
+                    <div class="checklist-card">
+                        <h4 style="margin-bottom: 15px;">필수 포함 요소</h4>
+                        <div class="check-item">
+                            <i class="far fa-circle" id="check1"></i>
+                            <span>구체적인 피해 사실 인정</span>
+                        </div>
+                        <div class="check-item">
+                            <i class="far fa-circle" id="check2"></i>
+                            <span>변명하지 않는 태도 ("하지만..." 금지)</span>
+                        </div>
+                        <div class="check-item">
+                            <i class="far fa-circle" id="check3"></i>
+                            <span>피해 회복을 위한 노력 약속</span>
+                        </div>
+                    </div>
+
+                    <div class="checklist-card" id="analysisResult" style="display: none;">
+                        <h4 style="margin-bottom: 15px;">AI 분석 리포트</h4>
+                        <div style="margin-bottom: 15px;">
+                            <span class="tone-badge" style="background: rgba(0,255,100,0.1); color: #4ade80;">진정성
+                                85%</span>
+                            <span class="tone-badge" style="background: rgba(255,0,0,0.1); color: #ff6b6b;">방어적 표현
+                                5%</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">
+                            전반적으로 차분하고 반성하는 어조입니다. 다만, 3번째 줄의 "그럴 의도는 없었으나" 라는 표현은 변명으로 들릴 수 있으니 삭제하는 것이 좋습니다.
+                        </p>
+                    </div>
+
+                    <div class="checklist-card">
+                        <h4 style="margin-bottom: 15px;">추천 템플릿</h4>
+                        <button class="btn btn-glass"
+                            style="width: 100%; font-size: 0.85rem; margin-bottom: 10px; justify-content: flex-start;"
+                            onclick="applyTemplate('standard')">
+                            기본 반성문 양식
+                        </button>
+                        <button class="btn btn-glass"
+                            style="width: 100%; font-size: 0.85rem; justify-content: flex-start;"
+                            onclick="applyTemplate('emotional')">
+                            피해 공감 강조형
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function analyzeTone() {
+            const btn = document.querySelector('.btn-primary');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 분석중...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                document.getElementById('analysisResult').style.display = 'block';
+                document.getElementById('check1').className = 'fas fa-check-circle';
+                document.getElementById('check2').className = 'fas fa-check-circle'; // Mock success
+
+                btn.innerHTML = '<i class="fas fa-magic"></i> 다시 분석하기';
+                btn.disabled = false;
+                alert('분석이 완료되었습니다. 우측 리포트를 확인해주세요.');
+            }, 1200);
+        }
+
+        function applyTemplate(type) {
+            const textarea = document.querySelector('textarea');
+            if (type === 'standard') {
+                textarea.value = `존경하는 피해자분께,\n\n지난 20xx년 x월 x일 발생한 [사건명]으로 인해 씻을 수 없는 상처를 드린 점, 머리 숙여 사죄드립니다.\n\n당시 저는 [상황 설명]...\n\n입이 열 개라도 할 말이 없으며, 저의 미성숙한 행동으로 인해 피해자분께서 겪으셨을 고통을 생각하면 잠을 이룰 수가 없습니다.`;
+            } else {
+                textarea.value = `피해자님께,\n\n어떤 말로도 피해자님이 받으셨을 충격과 고통을 대신할 수 없음을 잘 알고 있습니다. 정말 죄송합니다.\n\n제가 저지른 잘못된 행동이 피해자님의 일상을 얼마나 무너뜨렸을지 매일 깊이 반성하고 있습니다.\n\n앞으로 평생 이 죄책감을 안고 살아가며, 피해 복구를 위해 제가 할 수 있는 모든 노력을 다하겠습니다.`;
+            }
+        }
+    </script>
+</body>
+
+</html>

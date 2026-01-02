@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - SafeSettlement</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .switch-toggle {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .switch-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: 0.3s;
+        }
+
+        .switch-btn.active {
+            background: var(--bg-glass);
+            color: var(--text-main);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin: 20px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .divider span {
+            padding: 0 10px;
+        }
+
+        .social-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: #FEE500;
+            color: #191919;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="auth-container">
+        <div class="auth-box glass-card">
+            <h2 style="margin-bottom: 10px;">SafeSettlement.</h2>
+            <p style="color: var(--text-muted); margin-bottom: 30px;">안전하고 공정한 합의를 위한 첫 걸음</p>
+
+            <div class="switch-toggle">
+                <div class="switch-btn active" onclick="switchTab('login')">로그인</div>
+                <div class="switch-btn" onclick="switchTab('verify')">사건 조회 (처음이에요)</div>
+            </div>
+
+            <!-- Login / Signup Container -->
+            <div id="form-auth-container">
+                <!-- Login Form -->
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label">이메일</label>
+                        <input type="email" id="loginEmail" class="form-input" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">비밀번호</label>
+                        <input type="password" id="loginPw" class="form-input" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">로그인</button>
+                    <p style="margin-top: 15px; font-size: 0.9rem; color: var(--text-muted);">
+                        계정이 없으신가요? <span onclick="toggleSignupMode(true)"
+                            style="color: var(--secondary); cursor: pointer; font-weight: 600;">회원가입</span>
+                    </p>
+                </form>
+
+                <!-- Signup Form (Hidden initially) -->
+                <form id="signupForm" onsubmit="handleSignup(event)" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">이름</label>
+                        <input type="text" id="regName" class="form-input" placeholder="홍길동" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">이메일</label>
+                        <input type="email" id="regEmail" class="form-input" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">비밀번호</label>
+                        <input type="password" id="regPw" class="form-input" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">역할</label>
+                        <select id="regRole" class="form-input" style="background-color: hsla(220, 30%, 14%, 0.4);">
+                            <option value="offender">피의자 (가해자)</option>
+                            <option value="victim">피해자</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; margin-top: 10px; background: var(--secondary);">가입하기</button>
+                    <p style="margin-top: 15px; font-size: 0.9rem; color: var(--text-muted);">
+                        이미 계정이 있으신가요? <span onclick="toggleSignupMode(false)"
+                            style="color: var(--primary); cursor: pointer; font-weight: 600;">로그인</span>
+                    </p>
+                </form>
+
+                <div class="divider">
+                    <span>또는</span>
+                </div>
+
+                <button class="social-btn"><i class="fas fa-comment" style="margin-right:8px;"></i> 카카오로 시작하기</button>
+            </div>
+
+            <!-- Verify Form (Hidden by default) -->
+            <div id="form-verify" style="display: none;">
+                <form onsubmit="handleVerify(event)">
+                    <div class="form-group">
+                        <label class="form-label">사건 번호 (검찰/법원)</label>
+                        <input type="text" class="form-input" placeholder="202X형제12345">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">인증 코드 (문자로 받으신 코드)</label>
+                        <input type="text" class="form-input" placeholder="6자리 코드 입력">
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 10px;">사건 조회 및 가입</button>
+                </form>
+                <p style="margin-top: 20px; font-size: 0.85rem; color: var(--text-muted);">
+                    * 사건 번호를 모르시나요? <a href="#" style="color: var(--primary); text-decoration: underline;">안내 보기</a>
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+
+        function switchTab(tab) {
+            const btns = document.querySelectorAll('.switch-btn');
+            const authContainer = document.getElementById('form-auth-container');
+            const verifyForm = document.getElementById('form-verify');
+
+            if (tab === 'login') {
+                btns[0].classList.add('active');
+                btns[1].classList.remove('active');
+                authContainer.style.display = 'block';
+                verifyForm.style.display = 'none';
+            } else {
+                btns[0].classList.remove('active');
+                btns[1].classList.add('active');
+                authContainer.style.display = 'none';
+                verifyForm.style.display = 'block';
+            }
+        }
+
+        function toggleSignupMode(showSignup) {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+
+            if (showSignup) {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+            } else {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+            }
+        }
+
+        // 1. Handle Signup
+        async function handleSignup(e) {
+            e.preventDefault();
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPw').value;
+            const name = document.getElementById('regName').value;
+            const role = document.getElementById('regRole').value;
+
+            try {
+                const res = await fetch(`${API_BASE}/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, name, role })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    alert('가입이 완료되었습니다! 로그인해주세요.');
+                    toggleSignupMode(false); // Switch to login
+                } else {
+                    alert('가입 실패: ' + data.error);
+                }
+            } catch (err) {
+                alert('서버 연결 오류: ' + err.message + '\n\n[해결 방법]\n1. Node.js가 설치되어 있는지 확인하세요.\n2. 터미널에서 "node server.js"를 실행하세요.');
+                console.error(err);
+            }
+        }
+
+        // 2. Handle Login
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPw').value;
+
+            try {
+                const res = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    // Save User Info
+                    localStorage.setItem('user_id', data.userId);
+                    localStorage.setItem('user_name', data.name);
+                    localStorage.setItem('user_role', data.role);
+
+                    alert(`${data.name}님 환영합니다.`);
+                    location.href = 'dashboard.html';
+                } else {
+                    alert('로그인 실패: 아이디 또는 비밀번호를 확인하세요.');
+                }
+            } catch (err) {
+                alert('서버 연결 오류. 서버가 실행 중인지 확인해주세요.');
+                console.error(err);
+            }
+        }
+
+        function handleVerify(e) {
+            e.preventDefault();
+            alert('사건 조회 기능은 데모 버전에서 준비중입니다. 로그인 탭에서 회원가입 후 이용해주세요.');
+        }
+    </script>
+</body>
+
+</html>

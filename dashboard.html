@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사건 대시보드 - SafeSettlement</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="index.html" class="logo">SafeSettlement.</a>
+
+            <nav class="nav-links">
+                <div class="nav-item active" onclick="location.href='blind_proposal.html'" style="cursor: pointer;">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>사건 현황 (블라인드)</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-comments"></i>
+                    <span>안심 채팅</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-file-signature"></i>
+                    <span>합의서 관리</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-gavel"></i>
+                    <span>변호사 중재</span>
+                </div>
+                <div style="flex: 1;"></div>
+                <div class="nav-item" onclick="location.href='index.html'">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>로그아웃</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <div class="top-bar">
+                <div>
+                    <h2 style="margin-bottom: 5px;">사건 대시보드</h2>
+                    <p style="color: var(--text-muted);">사건번호 2024형제12345 (폭행)</p>
+                </div>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <button class="btn btn-glass" style="font-size: 0.85rem; padding: 0.5rem 1rem;"
+                        onclick="location.href='invite.html'">
+                        <i class="fas fa-paper-plane" style="margin-right: 6px;"></i> 합의 요청 보내기
+                    </button>
+                    <span class="status-badge">합의 조율 중</span>
+                    <div
+                        style="width: 40px; height: 40px; background: var(--bg-card); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1);">
+                        <i class="fas fa-bell" style="color: var(--text-muted);"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Left Column -->
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+
+                    <!-- Stats Row -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <a href="#" class="stat-card" style="text-decoration: none; color: inherit;">
+                            <span class="stat-label">예상 합의금 (평균)</span>
+                            <span class="stat-value" style="color: var(--primary);">₩ 3,500,000</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">유사 판례 24건 분석 결과</span>
+                        </a>
+                        <div class="stat-card">
+                            <span class="stat-label">합의 성공 확률</span>
+                            <span class="stat-value" style="color: var(--secondary);">85%</span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">양측 제시액 격차: 50만원</span>
+                        </div>
+                    </div>
+
+                    <!-- Chart Card -->
+                    <div class="glass-card" style="flex: 1;">
+                        <h3 style="margin-bottom: 20px;">합의금 분석 데이터</h3>
+                        <canvas id="scalcChart"></canvas>
+                        <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
+                            * 귀하의 사건(폭행, 전치 2주)과 유사한 최근 3년 판례를 분석했습니다.<br>
+                            * 일반적으로 <span style="color: var(--text-main); font-weight: 600;">200만원 ~ 450만원</span> 사이에서
+                            합의가 이루어집니다.
+                        </p>
+                    </div>
+
+                    <!-- Verification Status -->
+                    <div class="glass-card">
+                        <h3 style="margin-bottom: 15px;">진행 상태 체크리스트</h3>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div class="form-check" style="cursor: default;">
+                                <i class="fas fa-check-circle" style="color: var(--secondary);"></i> <span>본인 인증
+                                    완료</span>
+                            </div>
+                            <div class="form-check" style="cursor: default;">
+                                <i class="fas fa-check-circle" style="color: var(--secondary);"></i> <span>사건 번호 검증
+                                    완료</span>
+                            </div>
+                            <div class="form-check" style="cursor: default;">
+                                <i class="fas fa-check-circle" style="color: var(--secondary);"></i> <span>상대방 합의 의사
+                                    확인됨</span>
+                            </div>
+                            <div class="form-check" style="opacity: 0.5; cursor: default;">
+                                <i class="far fa-circle"></i> <span>최종 합의금 확정</span>
+                            </div>
+                            <div class="form-check" style="opacity: 0.5; cursor: default;">
+                                <i class="far fa-circle"></i> <span>에스크로 입금</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column (Chat) -->
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <span style="font-weight: 600;"><i class="fas fa-shield-alt"
+                                style="color: var(--secondary); margin-right: 8px;"></i>안심 채팅</span>
+                        <small style="color: var(--text-muted);">상대방 (익명)</small>
+                    </div>
+
+                    <div class="chat-messages" id="chatArea">
+                        <div class="system-msg">2024년 1월 2일 대화가 시작되었습니다.</div>
+                        <div class="system-msg">모욕, 협박성 발언은 AI 필터링에 의해 차단될 수 있습니다.</div>
+                        <div class="message received">
+                            안녕하세요. 이번 일에 대해 깊이 사과드리고 싶습니다.
+                        </div>
+                        <div class="message sent">
+                            네, 마음이 좀 진정되어서 대화에 응했습니다.
+                        </div>
+                        <div class="message received">
+                            피해 보상에 대해 생각해보신 금액이 있으실까요? 제 사정이 넉넉치는 않지만 최선을 다하겠습니다.
+                        </div>
+                    </div>
+
+                    <div class="message-input-area">
+                        <input type="text"
+                            style="flex: 1; background: transparent; border: none; color: white; outline: none;"
+                            placeholder="메시지를 입력하세요...">
+                        <button class="btn btn-primary" style="padding: 0.5rem 1rem;"><i
+                                class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+
+</html>
